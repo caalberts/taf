@@ -13,22 +13,22 @@ function __not_in_tmux
   [ -z "$TMUX" ]
 end
 
-function __session_exists
-  tmux list-sessions | sed -E 's/:.*$//' | grep -q "^$argv[1]\$"
+function __session_exists -a session_name
+  tmux list-sessions | sed -E 's/:.*$//' | grep -q "^$session_name\$"
 end
 
-function __create_detached_session
-  env TMUX='' tmux new-session -Ad -s $argv[1]
+function __create_detached_session -a session_name
+  env TMUX='' tmux new-session -Ad -s $session_name
 end
 
-function __create_if_needed_and_attach
+function __create_if_needed_and_attach -a session_name
   if __not_in_tmux
-    tmux new-session -As $argv[1]
+    tmux new-session -As $session_name
   else
-    if ! __session_exists $argv[1] 
-      __create_detached_session $argv[1]
+    if ! __session_exists $session_name 
+      __create_detached_session $session_name
     end
-    tmux switch-client -t $argv[1]
+    tmux switch-client -t $session_name
   end
 end
 
